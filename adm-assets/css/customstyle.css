@@ -1,0 +1,56 @@
+.page-heading{
+    background:url('/adm-assets/images/pagebg.jpg');
+    text-align:center;
+    color:#fff;
+    background-position:center;
+}
+.transparentbg{
+    background:rgba(0,0,0,0.3);
+    padding:5rem;
+    text-align:center;
+    font-weight:bold;
+}
+@media screen and (min-width: 993px) {
+    .advance .nav{
+        display:block !important;
+    }
+}
+@media screen and (max-width: 992) {
+    .advance .nav{
+        display:flex !important;
+    }
+}
+.advance .nav-item{
+    padding:.5rem 1rem;
+    border:1px solid #ddd;
+    border-top:0;
+    font-weight: bold;
+    color: #0d2e6b;
+}
+.tabbable .navtabs .nav-tabs .nav-link{
+    padding:.5rem 1rem;
+    border-left: 0 !important;
+    border-right: 0.5px solid #008000 !important;
+    display: block;
+    color: #0d2e6b !important;
+    font-weight: bold;
+}
+
+.tabbable .navtabs .nav-tabs .nav-link:first-child{
+    border-left: 1px solid #008000 !important;
+}
+.tabbable .navtabs .nav-tabs .nav-link.active{
+    border-top: 1px solid #008000 !important;
+}
+.tabbable .navtabs .nav-tabs .nav-link{
+    padding:.5rem 1rem;
+    border-left: 0 !important;
+    border-right: 1px solid #008000 !important;
+    display: block;
+    color: #0d2e6b !important;
+    font-weight: bold;
+}
+.tabbable .nav-tabs{
+    border-bottom:0 !important;
+}
+
