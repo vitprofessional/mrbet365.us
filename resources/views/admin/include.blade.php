@@ -44,8 +44,15 @@
           <script src="{{asset('/')}}admin/plugins/jquery/jquery.min.js"></script>
           <!--notify js cdn-->
          <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="{{ asset('/') }}admin/plugins/select2/select2.min.js"></script>
 
         <style type="text/css">
+            .select2-results{
+                color: #000 !important
+            }
+            .select2{
+                width:100% !important;
+            }
             .bethistory-table,.bethistory-table td{
                 font-size: 12px !important;
             }
@@ -457,7 +464,7 @@
                                             <i class="far fa-user-circle fs-3 my-3"></i> 
                                         </a>
                                         <div class="dropdown-menu" style="">
-                                            <a class="dropdown-item" href="#"><i class="fas fa-cogs"></i> Profile</a>
+                                            <a class="dropdown-item" href="{{ route('adminProfile') }}"><i class="fas fa-cogs"></i> Profile</a>
                                             <a class="dropdown-item" href="{{ route('adminLogout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i data-feather="power" class="align-self-center icon-xs icon-dual me-1"></i> Logout</a>
                                                 <form id="logout-form" action="{{ route('adminLogout') }}" method="POST" style="display: none;">
                                                     {{ csrf_field() }}
@@ -471,7 +478,7 @@
                                             <i class="far fa-user-circle fs-3 my-3"></i> 
                                         </a>
                                         <div class="dropdown-menu" style="">
-                                            <a class="dropdown-item" href="#"><i class="fas fa-cogs"></i> Profile</a>
+                                            <a class="dropdown-item" href="{{ route('adminProfile') }}"><i class="fas fa-cogs"></i> Profile</a>
                                             <a class="dropdown-item" href="{{ route('adminLogout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i data-feather="power" class="align-self-center icon-xs icon-dual me-1"></i> Logout</a>
                                                 <form id="logout-form" action="{{ route('adminLogout') }}" method="POST" style="display: none;">
                                                     {{ csrf_field() }}
@@ -535,6 +542,12 @@
         </div>
         
 <script>
+$('select:not(.normal)').each(function () {
+    $(this).select2({
+        dropdownParent: $(this).parent(),
+        placeholder: "Enter your query",
+    });
+});
     // alert disaper after seconds
     $(document).ready(function() {
         // show the alert
@@ -585,7 +598,6 @@
         <script src="{{ asset('/') }}admin/plugins/daterangepicker/daterangepicker.js"></script>
         
         <!-- Required datatable js -->
-        <script src="{{ asset('/') }}admin/plugins/select2/select2.min.js"></script>
         <script src="{{ asset('/') }}admin/plugins/datatables/jquery.dataTables.min.js"></script>
         <script src="{{ asset('/') }}admin/plugins/datatables/dataTables.bootstrap5.min.js"></script>
         <!-- Buttons examples -->

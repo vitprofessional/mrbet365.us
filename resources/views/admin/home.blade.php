@@ -144,8 +144,9 @@
                         @endphp
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header @if($x%2==0) bg-primary @elseif($x%3==0) bg-danger @else bg-success @endif text-white fw-bold">Live {{ $cat->name }}</div>
-                                <div class="card-body row g-2">
+                                    <div class="p-2 @if($x%2==0) bg-success @else bg-primary @endif text-white fw-bold rounded-top">{{ $cat->name }}</div>
+                                <div class="card-body rounded-bottom">
+                                    <div class="row g-2">
                                     @if(count($liveMatch)>0)
                                         @foreach($liveMatch as $lm)
                                         <div class="col-6 col-md-4">
@@ -161,9 +162,10 @@
                                         @endforeach
                                     @else
                                         <div class="col-12">
-                                            <div class="alert alert-info fw-bold">Sorry! No live match found in fixture</div>
+                                            Sorry! No live match found in fixture
                                         </div>
                                     @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>

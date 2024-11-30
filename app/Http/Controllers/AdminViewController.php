@@ -34,40 +34,58 @@ class AdminViewController extends Controller
         $this->middleware('BetAdmin');
     }
     
-    public function otikaTest(){
-        return view('otikaAdmin.dashboard');
-    }    
-    
     public function customerReport(){
         return view('admin.customerReport');
     }
     
     public function finalCustomerReport(Request $requ){
         $type       = $requ->type;
+        $admin      = $requ->adminId;
         $formDate   = $requ->dateTimeForm;
         $toDate     = $requ->dateTimeTo;
         
         $form_date = Carbon::parse($formDate)->format('Y-m-d');
         $to_date = Carbon::parse($toDate)->format('Y-m-d');
-        if($type=="All"):
-            $DepositReport = Deposit::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Accept')->get();
-            $WithdrawReport = WithdrawalRequest::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Paid')->get();
-        elseif($type=="Deposit"):
-            $DepositReport = Deposit::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Accept')->get();
-            $WithdrawReport    = "";
-        elseif($type=="Withdrawal"):
-            $WithdrawReport = WithdrawalRequest::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Paid')->get();
-            $DepositReport    = "";
+        if($admin=="All"):
+            if($type=="All"):
+                $DepositReport = Deposit::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Accept')->get();
+                $WithdrawReport = WithdrawalRequest::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Paid')->get();
+            elseif($type=="Deposit"):
+                $DepositReport = Deposit::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Accept')->get();
+                $WithdrawReport    = "";
+            elseif($type=="Withdrawal"):
+                $WithdrawReport = WithdrawalRequest::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Paid')->get();
+                $DepositReport    = "";
+            else:
+                $WithdrawReport = "";
+                $DepositReport    = "";
+            endif;
         else:
-            $WithdrawReport = "";
-            $DepositReport    = "";
+            if($type=="All"):
+                $DepositReport = Deposit::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Accept')->where('acceptBy',$admin)->get();
+                $WithdrawReport = WithdrawalRequest::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Paid')->where('acceptBy',$admin)->get();
+            elseif($type=="Deposit"):
+                $DepositReport = Deposit::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Accept')->where('acceptBy',$admin)->get();
+                $WithdrawReport    = "";
+            elseif($type=="Withdrawal"):
+                $WithdrawReport = WithdrawalRequest::whereDate('updated_at', '>=', $form_date)->whereDate('updated_at', '<=', $to_date)->where('status','Paid')->where('acceptBy',$admin)->get();
+                $DepositReport    = "";
+            else:
+                $WithdrawReport = "";
+                $DepositReport    = "";
+            endif;
         endif;
         return view('admin.finalCustomerReport',['DepositReport'=>$DepositReport,'WithdrawReport'=>$WithdrawReport,'formDate'=>$form_date,'toDate'=>$to_date]);
     }
     
     public function AdminHome(){
         $admindetails   = AdminUser::find(Session::get('SuperAdmin'));
-        return view('otikaAdmin.dashboard',['details'=>$admindetails]);
+        return view('admin.home',['details'=>$admindetails]);
+    }
+    
+    public function adminProfile(){
+        $admindetails   = AdminUser::find(Session::get('BetAdmin'));
+        return view('admin.adminProfile',['admin'=>$admindetails]);
     }
     
     //User controller
@@ -545,7 +563,7 @@ class AdminViewController extends Controller
         $teamA = Team::find($match->teamA);
         $teamB = Team::find($match->teamB);
         $category   = Category::find($match->category);
-        return view('otikaAdmin.liveRoom',['MatchQuestion'=>$MatchQuestion,'match'=>$match,'category'=>$category,'teamA'=>$teamA,'teamB'=>$teamB]);
+        return view('admin.liveRoom',['MatchQuestion'=>$MatchQuestion,'match'=>$match,'cat'=>$category,'teamA'=>$teamA,'teamB'=>$teamB]);
     }
     
     public function matchManage($id){

@@ -56,7 +56,7 @@
                                                                         <button type="button" id="fqReset" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
                                                                     <div class="modal-body bet-data">
-                                                                        <div :id="'fqBetProcess'+fqVal.id+tindex"></div>
+                                                                        <div :id="'fqProcess'+fqVal.id+tindex"></div>
                                                                         <div :id="'fqSuccess'+fqVal.id+'-'+tindex"></div>
                                                                         <div v-if="val.sessionUser != null">
                                                                             <div class="row" v-if="fqVal.status == 1" :id="'fqForm'+fqVal.id+tindex">
@@ -128,7 +128,7 @@
                                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
                                                                     <div class="modal-body bet-data">
-                                                                        <div :id="'fqBetProcess'+fqVal.id+3"></div>
+                                                                        <div :id="'fqProcess'+fqVal.id+3"></div>
                                                                         <div :id="'fqSuccess'+fqVal.id+'-'+3"></div>
                                                                         <div v-if="val.sessionUser != null">
                                                                             <div class="row" v-if="fqVal.status == 1" :id="'fqForm'+fqVal.id+3">
@@ -310,7 +310,7 @@
                                                                         <button type="button" id="sfqReset" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
                                                                     <div class="modal-body bet-data">
-                                                                        <div :id="'sfqBetProcess'+fqVal.id+tindex"></div>
+                                                                        <div :id="'sfqProcess'+fqVal.id+tindex"></div>
                                                                         <div :id="'sfqSuccess'+fqVal.id+'-'+tindex"></div>
                                                                         <div v-if="val.sessionUser != null">
                                                                             <div class="row" v-if="fqVal.status == 1" :id="'sfqForm'+fqVal.id+tindex">
@@ -380,7 +380,7 @@
                                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
                                                                     <div class="modal-body bet-data">
-                                                                        <div :id="'sfqBetProcess'+fqVal.id+3"></div>
+                                                                        <div :id="'sfqProcess'+fqVal.id+3"></div>
                                                                         <div :id="'sfqSuccess'+fqVal.id+'-'+3"></div>
                                                                         <div v-if="val.sessionUser != null">
                                                                             <div class="row" v-if="fqVal.status == 1" :id="'sfqForm'+fqVal.id+3">

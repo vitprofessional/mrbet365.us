@@ -28,6 +28,22 @@
                                             </select>
                                         </div>
                                         <div class="form-group pb-2">
+                                            <label for="adminId">Admin</label>
+                                            <select name="adminId" class="form-control border border-dark" required>
+                                                <option value="All">All</option>
+                                                @php
+                                                    $financeAdmin = \App\Models\AdminUser::where(['rule'=>'Super Admin'])->orWhere(['rule'=>'Level One'])->get();
+                                                @endphp
+                                                @if(!empty($financeAdmin))
+                                                @foreach($financeAdmin as $fAdmin)
+                                                <option value="{{ $fAdmin->id }}">
+                                                    {{ $fAdmin->adminid }}
+                                                </option>
+                                                @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                        <div class="form-group pb-2">
                                             <label for="dateTimeForm">From Date</label>
                                             <input type="date" name="dateTimeForm" class="form-control border border-dark" required>
                                         </div>

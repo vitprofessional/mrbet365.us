@@ -33,7 +33,7 @@ class BroadCastController extends Controller
 		endif;
 		if(count($category)>0):
 		
-        $sd    = SiteConfig::first([id,minBet,maxBet]);
+        return $sd    = SiteConfig::first([id,minBet,maxBet]);
         if(count($sd)>0):
             $siteDetails = $sd;
         endif;

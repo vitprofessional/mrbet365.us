@@ -15,14 +15,14 @@
         <link rel="shortcut icon" href="{{ asset('/') }}assets/images/favicon.png">
         <!-- DataTables -->
         <link href="{{ asset('/') }}admin/plugins/datatables/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
-        <script src="{{ asset('/') }}assets/js/countries.js" type="text/javascript"> </script>
+        <script src="{{ url('/') }}/assets/js/countries.js" type="text/javascript"> </script>
         <link href="{{ asset('/') }}admin/plugins/datatables/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css" />
         <!-- Responsive datatable examples -->
         <link href="{{ asset('/') }}admin/plugins/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" /> 
         <!-- App css -->
         <link href="{{ asset('/') }}admin/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <script src="{{ asset('/') }}assets/js/countries.js" type="text/javascript"> </script>
-        <link href="{{ asset('/') }}assets/css/style.css" rel="stylesheet" type="text/css" />
+        <script src="{{ url('/') }}/assets/js/countries.js" type="text/javascript"> </script>
+        <link href="{{ url('/') }}/assets/css/style.css" rel="stylesheet" type="text/css" />
         <link href="{{ asset('/') }}admin/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
         <link href="adm-assets/css/customstyle.css" rel="stylesheet" type="text/css" />
         <style type="text/css">
@@ -54,7 +54,8 @@
         </style>
     </head>
 
-    <body class="">
+    <body class="" oncontextmenu="return false;">
+    <!--<body class="">-->
         <div class="sticky shadow">
             <div class="bg-dark">
                 <div class="container-fluid p-3">
@@ -62,14 +63,14 @@
                         <div class="row align-items-center">
                             <div class="col-8 col-md-2 mx-auto text-center text-md-start text-white fw-bold rounded" style="font-size:1.3rem;"><a href="{{ url('/') }}" class="text-white"><img class="img-fluid" src="{{ asset('/') }}assets/images/mrbetlogo.png" alt="MrBet365"></a></div>
                             <div class="col-12 col-md-9 mx-auto text-center text-md-end top-bar">
-                                @if(count($details)>0)
+                                @if(!empty($details) && count((array)$details)>0)
                                 <a href="#" class="text-white"><i class="fas fa-paper-plane"></i> Messages</a>
                                 <a href="{{ route('userdash') }}" class="text-white"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                                 <a href="{{ route('userlogout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="text-white"><i class="fas fa-sign-out-alt"></i> Logout</a>
                                 <form id="logout-form" action="{{ route('userlogout') }}" method="POST" style="display: none;">
                                         {{ csrf_field() }}
                                     </form>
-                                @elseif(count($clubDetails)>0)
+                                @elseif(!empty($clubDetails) && count((array)$clubDetails)>0)
                                     <a href="{{ route('clubHome') }}" class="text-white"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                                     <a href="{{ route('clubLogout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="text-white"><i class="fas fa-sign-out-alt"></i> Logout</a>
                                     <form id="logout-form" action="{{ route('clubLogout') }}" method="POST" style="display: none;">
@@ -93,10 +94,10 @@
                                 <div class="text-white fw-bold rounded" style="font-size:1.3rem;"><a href="{{ url('/') }}" class="text-white"><img class="img-fluid" src="{{ asset('/') }}assets/images/mrbetmobilelogo.png" alt="MrBet365"></a></div>
                             </div>
                             <div class="col-7 text-end mx-auto">
-                                @if(count($details)>0)
+                                @if(!empty($details) && count((array)$details)>0)
                                 <a href="{{ route('userprofile') }}" class="text-white fw-bold h4"><i class="fas fa-user-circle"></i> @if(empty($details->fullname)) {{ $details->userid }} @else {{ $details->fullname }} @endif</a>
                                     <span class="h4 fw-bold text-white"><i class="fas fa-donate"></i> <b id='userBalanceMT'>{{ number_format($details->balance,2) }}</b></span>
-                                @elseif(count($clubDetails)>0)
+                                @elseif(!empty($clubDetails) && count((array)$clubDetails)>0)
                                 <a href="{{ route('clubSettings') }}" class="text-white fw-bold h4"><i class="fas fa-user-circle"></i> @if(empty($clubDetails->fullname)) {{ $clubDetails->clubid }} @else {{ $clubDetails->fullname }} @endif</a>
                                     <span class="h4 fw-bold text-white"><i class="fas fa-donate"></i> {{ number_format($clubDetails->balance,2) }}</span>
                                 @else
@@ -122,7 +123,7 @@
                                             <li class="nav-item">
                                                 <a class="nav-link" href="{{ route('advanceBet') }}">Advance Bet</a>
                                             </li>
-                                    @if(count($details)>0))
+                                    @if(!empty($details) && count((array)$details)>0))
                                             <li class="nav-item dropdown">
                                               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 Account Activity
@@ -148,7 +149,7 @@
                                                 <li><a class="dropdown-item" href="{{ route('C2CReceivingHistory') }}">Coin Received History</a></li>
                                             </ul>
                                         </li>
-                                    @elseif(count($clubDetails)>0))
+                                    @elseif(!empty($clubDetails) && count((array)$clubDetails)>0))
                                             <li class="nav-item dropdown">
                                               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 Club Activity
@@ -170,7 +171,7 @@
                                         </li>
                                     @endif
                                     </div>
-                                    @if(count($details)>0))
+                                    @if(!empty($details) && count((array)$details)>0))
                                     <div class="col-8 col-lg-4 text-end">
                                         <ul class="navbar-nav">
                                             <li class="nav-item h3">
@@ -186,7 +187,7 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    @elseif(count($clubDetails)>0))
+                                    @elseif(!empty($clubDetails) && count((array)$clubDetails)>0))
                                     <div class="col-8 col-md-4 text-end">
                                         <ul class="navbar-nav text-uppercase">
                                             <li class="nav-item h3">
@@ -224,13 +225,13 @@
                                 </div>
                             </div>
                         </div>
-                        @if(count($details)>0))
+                        @if(!empty($details) && count((array)$details)>0))
                         <div class="col-12 mx-auto text-center">
                             <a href="{{ route('userprofile') }}" class="text-white fw-bold h4 px-2"><i class="fas fa-user-circle"></i> @if(empty($details->fullname)) {{ $details->userid }} @else {{ $details->fullname }} @endif</a>
                             <a class="text-white fw-bold h4 px-2" href="{{ route('makeDeposit') }}"><span class="btn btn-primary fw-bold"><i class="fab fa-google-wallet"></i> Deposit</span></a>
                             <span class="text-white fw-bold h4 px-2"><i class="fas fa-donate"></i> <b id='userBalanceDesktop'>{{ number_format($details->balance,2) }}</b></span>
                         </div>
-                        @elseif(count($clubDetails)>0))
+                        @elseif(!empty($clubDetails) && count((array)$clubDetails)>0))
                         <div class="col-12 mx-auto text-center">
                             <a href="{{ route('userprofile') }}" class="text-white fw-bold h4 px-2"><i class="fas fa-user-circle"></i> @if(empty($clubDetails->fullname)) {{ $clubDetails->userid }} @else {{ $clubDetails->fullname }} @endif</a>
                             <span class="text-white fw-bold h4 px-2"><i class="fas fa-donate"></i> {{ number_format($clubDetails->balance,2) }}</span>
@@ -254,7 +255,7 @@
             </div>
             <div class="py-0">
                 <ul class="list-group rounded-0">
-                    @if(count($details)>0)
+                    @if(!empty($details) && count((array)$details)>0)
                     <li><a href="{{ url('/') }}" class="list-group-item"><i class="fas fa-home"></i> Home</a></li>
                     <li><a href="{{ route('advanceBet') }}" class="list-group-item"><i class="fas fa-bullhorn"></i> Advance Bet</a></li>
                     <div class="accordion accordion-flush" id="userMenuCollapse">
@@ -293,7 +294,7 @@
                         </div>
                     </div> 
                     <li><a href="{{ route('customerAccountStmt') }}" class="list-group-item"><i class="fas fa-list"></i> Statement</a></li>
-                    @elseif(count($clubDetails)>0))
+                    @elseif(!empty($clubDetails) && count((array)$clubDetails)>0))
                         <li><a href="{{ url('/') }}" class="list-group-item"><i class="fas fa-home"></i> Home</a></li>
                         <li><a href="#" class="list-group-item"><i class="fas fa-globe"></i> Live</a></li>
                         <li><a href="#" class="list-group-item"><i class="fas fa-bullhorn"></i> Upcoming</a></li>
@@ -334,13 +335,13 @@
                     @endif
                 </ul>
             </div>
-            @if(count($details)>0 || count($clubDetails)>0)
+            @if(!empty($details) && count((array)$details)>0 || !empty($clubDetails) &&  count((array)$clubDetails)>0)
             <div class="bg-dark mt-auto p-3 row align-items-center g-0 text-center user-footer">
                 <div class="col-4">
                     <a href="{{ url('/') }}" class="text-white"><i class="fas fa-home"></i></a>
                 </div>
                 <div class="col-4">
-                    @if(count($clubDetails)>0)
+                    @if(!empty($clubDetails) && count((array)$clubDetails)>0)
                     <a href="{{ route('clubSettings') }}" class="text-white"><i class="fas fa-cogs"></i></a>
                     @else
                     <a href="{{ route('userprofile') }}" class="text-white"><i class="fas fa-tachometer-alt"></i></a>
@@ -426,9 +427,7 @@
         <!-- jQuery  -->
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<script>
-	initSample();
-</script>
+
 <script type="text/javascript">
     $(document).ready(function() {
         $('#datatable').DataTable( {
@@ -456,7 +455,7 @@
     }
 </script>
         <script src="{{ asset('/') }}admin/assets/js/bootstrap.bundle.min.js"></script>
-        @if(count($details)>0)
+        @if(!empty($details) && count((array)$details)>0)
         <!-- jQuery  -->
         <script src="{{ asset('/') }}admin/assets/js/metismenu.min.js"></script>
         <script src="{{ asset('/') }}admin/assets/js/waves.js"></script>

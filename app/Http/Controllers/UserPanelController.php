@@ -19,7 +19,6 @@ use App\Models\Matche;
 use App\Models\Team;
 use Session;
 use Hash;
-use Carbon\Carbon;
 
 class UserPanelController extends Controller
 {
@@ -30,264 +29,9 @@ class UserPanelController extends Controller
     public function countRequest(Request $requ){
         
     }
-    
-    public function fqBetPlace(Request $requ){
-        $config = SiteConfig::first();
-		
-		$minMaxError = '<div class="alert alert-warning" id="message-alert">
-		<button type="button" class="btn btn-warning btn-sm fw-bold close" data-dismiss="alert">x</button>
-		<strong>Sorry!</strong>
-		Can not possible to place bet less '.$config->minBet.' & max '.$config->maxBet.'</div>';
-		$balanceError = '<div class="alert alert-warning" id="message-alert">
-		<button type="button" class="btn btn-warning btn-sm fw-bold close" data-dismiss="alert">x</button>
-		<strong>Sorry!</strong>
-		You have insufficient balance to place bet. Please recharge your account to continue
-		</div>';
-		$errorBetTime = '<div class="alert alert-warning" id="message-alert">
-		<button type="button" class="btn btn-warning btn-sm fw-bold close" data-dismiss="alert">x</button>
-		<strong>Sorry!</strong>
-		You need at least 7 seconds between to place 2nd bet
-		</div>';
-		$successMessage = '<div class="alert alert-success" id="message-alert">
-		<button type="button" class="btn btn-success btn-sm fw-bold close" data-dismiss="alert">x</button>
-		<strong>Success!</strong>
-		Your bet successfully placed!
-		</div>';
-		$errorMessage = '<div class="alert alert-warning" id="message-alert">
-		<button type="button" class="btn btn-warning btn-sm fw-bold close" data-dismiss="alert">x</button>
-		<strong>Sorry!</strong>
-		Failed to placed your bet. Please try later
-		</div>';
-		$statusError = '<div class="alert alert-warning" id="message-alert">
-		<button type="button" class="btn btn-warning btn-sm fw-bold close" data-dismiss="alert">x</button>
-		<strong>Sorry!</strong>
-		No bet available right now.
-		</div>';
-		$matchError = '<div class="alert alert-warning" id="message-alert">
-		<button type="button" class="btn btn-warning btn-sm fw-bold close" data-dismiss="alert">x</button>
-		<strong>Sorry!</strong>
-		Bet is not available to this match.
-		</div>';
-		$profileStatus = '<div class="alert alert-warning" id="message-alert">
-		<button type="button" class="btn btn-warning btn-sm fw-bold close" data-dismiss="alert">x</button>
-		<strong>Sorry!</strong>
-		You are not allowed to place any bet, please contact support.
-		</div>';
-		$loginError = '<div class="alert alert-warning" id="message-alert">
-		<button type="button" class="btn btn-warning btn-sm fw-bold close" data-dismiss="alert">x</button>
-		<strong>Sorry!</strong>
-		Please login first.
-		</div>';
-        #User login check
-        $user = BetUser::find(Session::get('betuser'));
 
-        #Only web user can bet
-        if(empty($user)) {
-            return response()->json(array('fieldIndex'=>$requ->fieldIndex,'message'=> $loginError), 200);
-        }
-
-        #Check when this user last bet.
-        $betPlace = UserBet::where([
-            "user" => $user->id,
-            "matchId" => trim(strip_tags($requ->matchId)),
-            "tournament" => trim(strip_tags($requ->tournament)),
-        ])->orderBy('created_at', 'desc')->first();
-
-        if(!empty($betPlace)){
-            $now = Carbon::now();
-            $diff_in_second = $now->diffInSeconds($betPlace->created_at);
-            if($diff_in_second < 10){
-				return response()->json(array('fieldIndex'=>$requ->fieldIndex,'message'=> $errorBetTime), 200);
-            }
-        }
-
-        #User Balance Check
-        $userTotalBalance = $user->balance;
-        $betAmount        = trim(strip_tags($requ->betAmount));
-
-        if($userTotalBalance < $betAmount){
-			return response()->json(array('fieldIndex'=>$requ->fieldIndex,'message'=> $balanceError), 200);
-        }
-
-        // if($userTotalBalance < 0 || $user->totalRegularDepositAmount < 0 || $user->totalSpecialDepositAmount < 0 || $user->totalCoinReceiveAmount < 0 || $user->totalSponsorAmount < 0 || $user->totalProfitAmount < 0 || $user->totalCoinTransferAmount < 0  || $user->totalLossAmount < 0   || $user->totalWithdrawAmount < 0 ){
-        //     return response()->json(['errorMsg'=>'["error : Account problem contact admin."]']);
-        // }
-
-        #Check : Is User given betAmount is same as config table minimum bet and maximum bet.
-        if(($betAmount < $config->minBet) || ($betAmount > $config->maxBet) ){
-            return response()->json(array('fieldIndex'=>$requ->fieldIndex,'message'=> $minMaxError), 200);
-        }
-
-        if($config->userBetStatus == 0){
-            return response()->json(array('fieldIndex'=>$requ->fieldIndex,'message'=> $statusError), 200);
-        }
-
-        #Check This Match Is On Live Or Upcoming .
-        #Draft = 0;
-        #Onbet/upcoming = 1;
-        #Live = 2;
-        #Done = 3;
-
-        $match = Matche::where("id",trim(strip_tags($requ->matchId)))->whereIn("status",[1,2,3])->first();
-        if(empty($match)){
-            return response()->json(array('fieldIndex'=>$requ->fieldIndex,'message'=> $matchError), 200);
-        }
-
-        #Check : Is User bet action right bet option which is for live or upcoming match bet option.
-		
-        $betDetail = FixedQuestion::where([
-            "quesId" => $requ->answerId,
-            "matchId" => $requ->matchId,
-            "tournament" => $requ->tournament,
-            "status" => 1,
-        ])->first();
-
-        if(empty($betDetail)){
-            return response()->json(array('fieldIndex'=>$requ->fieldIndex,'message'=> $statusError), 200);
-        }
-
-        try {
-            $matchData  = Matche::find($requ->matchId);
-            $tournament = $matchData->tournament;
-			$teamName   = Team::where(['catId'=>$betDetail->catId,'team'=>$requ->answer])->first();
-			$teamAvalue = Matche::where(['id'=>$matchData->id,'teamA'=>$teamName->id,'status'=>1])->first();
-			$teamBvalue = Matche::where(['id'=>$matchData->id,'teamB'=>$teamName->id,'status'=>1])->first();
-			if(count($teamAvalue)>0):
-				$returnValue = $betDetail->teamA;
-			elseif(count($teamBvalue)>0):
-				$returnValue = $betDetail->teamB;
-			elseif($requ->answer=='draw'):
-				$returnValue = $betDetail->draw;
-			else:
-				return response()->json(array('fieldIndex'=>$requ->fieldIndex,'message'=> $statusError), 200);
-			endif;
-			if($requ->answerRate != $returnValue):
-				$betChangeAlert = "<div class='alert alert-warning' id='message-alert'>
-				<button type='button' class='btn btn-warning btn-sm fw-bold close' data-dismiss='alert'>x</button>
-					<strong>Sorry!</strong> 
-					Answer rate change to ".$returnValue." and you will get return ".$requ->betAmount*$returnValue." Place your bet again if you are agree</div>";
-				return response()->json(array('fieldIndex'=>$requ->fieldIndex,'message'=> $betChangeAlert), 200);
-			endif;
-				
-			
-			
-			$userNewBalance         = $user->balance;
-			$userUpdateBalance      = $userNewBalance-$requ->betAmount;
-			$user->balance       	= $userUpdateBalance;
-			$user->update();
-            
-			$betData    = new UserBet();	
-			$returnAmount           = $requ->betAmount*$returnValue;
-			$betData->user          = $user->id;
-			$betData->betOn         = "FQ";
-			$betData->betOption     = $requ->answerId;
-			$betData->betAnswer     = $requ->answer;
-			$betData->matchId       = $requ->matchId;
-			$betData->tournament    = $tournament;
-			$betData->betAmount     = $requ->betAmount;
-			$betData->sponsor       = $sponsorAmount;
-			$betData->club          = $clubAmount;
-			$betData->returnAmount  = $returnAmount;
-			$betData->betRate       = $returnValue;
-			$betData->status        = 1;
-			$betData->save();
-			$currentBalance = $userNewBalance;
-			//Bet user profile update
-			//Update user statement
-			$statement   = BetUserStatement::where(['user'=>$user->id])->first();
-			if(!empty($statement)):
-				$stmtBal    = $statement->currentBalance;
-			else:
-				$stmtBal    = $user->balance;
-			endif;
-			//Create statement
-			$statement= new BetUserStatement();
-			$statement->user  = $user->id;
-			//$statement = BetUserStatement::find($statement->id);
-			$statement->prevBalance  = $stmtBal;
-			$statement->currentBalance  = $userUpdateBalance;
-			$statement->transAmount  = $requ->betAmount;
-			$statement->note   = "PlaceBet";
-			$statement->transType   = "Debit";
-			$statement->save();
-			//end statement
-			
-			//Sponsor data
-			$sponsor = $user->sponsor;
-			$sponsorBonus   = $config->sponsorRate;
-			$sponsorAmount  = ($sponsorBonus/100)*$requ->betAmount;
-			//Sponsor balance update
-			if(!empty($sponsor)):
-				$sponsorProfile = BetUser::where(['userid'=>$sponsor])->first();
-				
-				//Sponsor balance update
-				if(!empty($sponsorProfile)):
-					$spBal  = $sponsorProfile->balance;
-					$spNewBal   = $spBal+$sponsorAmount;
-					$sponsorProfile->balance = $spNewBal;
-					//sponsor statement update 
-					$spStatement    = BetUserStatement::where(['user'=>$sponsorProfile->id])->first();
-					if(!empty($spStatement)):
-						$spStmtBal    = $spStatement->currentBalance;
-					else:
-						$spStmtBal    = $spBal;
-					endif;
-					//Create statement
-					$spStatement= new BetUserStatement();
-					$spStatement->user  = $sponsorProfile->id;
-					//$statement = BetUserStatement::find($statement->id);
-					$spStatement->prevBalance  = $spStmtBal;
-					$spStatement->currentBalance  = $spNewBal;
-					$spStatement->transAmount  = $sponsorAmount;
-					$spStatement->note   = "SponsorBonus";
-					$spStatement->transType   = "Credit";
-					//Sponsor statement and profile update
-					$spStatement->save();
-					$sponsorProfile->update();
-				endif;
-			endif;
-			
-			
-			//Club data
-			$club = $user->club;
-			$clubBonus   = $config->clubRate;
-			$clubAmount  = ($clubBonus/100)*$requ->betAmount;
-			//Club balance update
-			$clubProfile = BettingClub::where(['clubid'=>$club])->first();
-			if(!empty($clubProfile)):
-				$clubBal  = $clubProfile->balance;
-				$clubNewBal   = $clubBal+$clubAmount;
-				$clubProfile->balance = $clubNewBal;
-				//sponsor statement update 
-				$clubStatement    = ClubStatement::where(['club'=>$clubProfile->id])->first();
-				if(!empty($clubStatement)):
-					$clbBal    = $clubStatement->currentBalance;
-				else:
-					$clbBal    = $clubBal;
-				endif;
-				//Create statement
-				$clubStatement= new ClubStatement();
-				$clubStatement->club  = $clubProfile->id;
-				//$statement = BetUserStatement::find($statement->id);
-				$clubStatement->prevBalance  = $clbBal;
-				$clubStatement->currentBalance  = $clubNewBal;
-				$clubStatement->transAmount  = $clubAmount;
-				$clubStatement->note   = "ClubBonus";
-				$clubStatement->generateBy   = $user->userid;
-				$clubStatement->transType   = "Credit";
-				//Club statement and profile update
-				$clubStatement->save();
-				$clubProfile->save();
-			endif;
-			return response()->json(array('currBalance'=> $userUpdateBalance,'fieldIndex'=>$requ->fieldIndex,'message'=>$successMessage), 200);
-
-        }catch (Exception $e){
-            return response()->json(array('fieldIndex'=>$requ->fieldIndex,'message'=> $errorMessage), 200);
-        }
-    }
-    
     //Place fixed queston bet
-    public function oldfqBetPlace(Request $requ){
+    public function fqBetPlace(Request $requ){
         
         // return count($requ->matchId);
         
@@ -396,18 +140,18 @@ class UserPanelController extends Controller
                 $userNewBalance         = $profile->balance;
                 $userUpdateBalance      = $userNewBalance-$requ->betAmount;
                 $profile->balance       = $userUpdateBalance;
-                $profile->save();
-                
-                $profile    = BetUser::find(Session::get('betuser'));
-                $currentBalance = $profile->balance;
                     
-                $dateNow = date('Y-m-d H:i:s');
-                $existBet = UserBet::where(['user'=>$requ->userId,'created_at'=>$dateNow])->get();
-                if(count($existBet)>0):
-                    return response()->json(array('currBalance'=> $currentBalance,'fieldIndex'=>$requ->fieldIndex,'message'=>$errorBetTime), 200);
-                endif;
+                // $dateNow = date('Y-m-d H:i:s');
+                // $existBet = UserBet::where(['user'=>$requ->userId,'created_at'=>$dateNow])->get();
+                // if(count($existBet)>0):
+                //     return response()->json(array('currBalance'=> $currentBalance,'fieldIndex'=>$requ->fieldIndex,'message'=>$errorBetTime), 200);
+                // endif;
+                
                 //Bet user profile update
-                if($betData->save()):
+                if($betData->save() && $profile->save()):
+                
+                    $profile    = BetUser::find(Session::get('betuser'));
+                    $currentBalance = $userUpdateBalance;
                     //Update user statement
                     $statement   = BetUserStatement::where(['user'=>$profile->id])->get()->last();
                     if(count($statement)>0):
@@ -427,10 +171,6 @@ class UserPanelController extends Controller
                     $statement->save();
                     //end statement
                     
-                    //Sponsor data
-                    $sponsor = $profile->sponsor;
-                    $sponsorBonus   = $sd->sponsorRate;
-                    $sponsorAmount  = ($sponsorBonus/100)*$requ->betAmount;
                     //Sponsor balance update
                     if(!empty($sponsor)):
                         $sponsorProfile = BetUser::where(['userid'=>$sponsor])->get()->last();
@@ -462,11 +202,6 @@ class UserPanelController extends Controller
                         endif;
                     endif;
                     
-                    
-                    //Club data
-                    $club = $profile->club;
-                    $clubBonus   = $sd->clubRate;
-                    $clubAmount  = ($clubBonus/100)*$requ->betAmount;
                     //Club balance update
                     $clubProfile = BettingClub::where(['clubid'=>$club])->get()->last();
                     if(count($clubProfile)>0):

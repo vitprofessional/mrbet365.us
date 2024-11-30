@@ -1,3 +1,0 @@
-[24-May-2022 08:44:13 America/Phoenix] PHP Warning:  Unexpected character in input:  '' (ASCII=29) state=0 in /home/cip2015/public_html/adm-assets/images/pagebg.jpg on line 324
-[24-May-2022 08:44:13 America/Phoenix] PHP Warning:  Unexpected character in input:  '' (ASCII=18) state=0 in /home/cip2015/public_html/adm-assets/images/pagebg.jpg on line 324
-[24-May-2022 08:44:13 America/Phoenix] PHP Parse error:  syntax error, unexpected '¤4¥²' (T_STRING) in /home/cip2015/public_html/adm-assets/images/pagebg.jpg on line 324

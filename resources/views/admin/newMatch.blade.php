@@ -36,8 +36,24 @@
                                             </select>
                                         </div>
                                         
-                                        <div id="tOption"></div>
-                                        <div id="team"></div>
+                                        <div class="form-group pb-2">
+                                            <label for="tournament">Tournament</label>
+                                            <select name="tournament" onchange="changeTournament()" id="tournament" class="form-control border border-dark" required>
+                                                <option value=''>-</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group pb-2">
+                                            <label for="ateam">Home Team</label>
+                                            <select name="ateam" id='hometeam' class="form-control border border-dark" required>
+                                                <option value="">-</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group pb-2">
+                                            <label for="ateam">Away Team</label>
+                                            <select name="ateam" id='awayteam' class="form-control border border-dark" required>
+                                                <option value="">-</option>
+                                            </select>
+                                        </div>
                                         
                                         <div class="form-group pb-2">
                                             <label for="matchTime">Match Time</label>
@@ -58,38 +74,34 @@
 
 function categoryChange() {
   var x = document.getElementById('catValue').value;
-    // var IDSes= x;
-    // //'<%Session["IDDiv"] = "' + $(this).attr('id') + '"; %>';
-    // '<%Session["IDSes"] = "' + IDSes+ '"; %>';
-    //  alert('<%=Session["IDSes"] %>');
-    //document.cookie('catVal')=x; 
-    //$.post("{{ route('newMatch') }}", {IDSES:x});
     if(x==""){
         //$(".tournamentHideShow").hide();
-        document.getElementById("tOption").innerHTML = "<div class='text-danger'>Please select a category to find tournament</div>";
+        document.getElementById("tournament").innerHTML = "<option value=''>-</option>";
     }else{
         const xhttp = new XMLHttpRequest();
           xhttp.onload = function() {
-            document.getElementById("tOption").innerHTML = this.responseText;
+            // document.getElementById("tOption").innerHTML = "<option>1</option><option>2</option>";
+            document.getElementById("tournament").innerHTML = this.responseText;
           }
           xhttp.open("GET", "{{ url('/') }}/control-panel/admin/getTournament/"+document.getElementById('catValue').value);
           xhttp.send();
     }
     
-    
 }
+
 function changeTournament() {
   var x = document.getElementById('catValue').value;
 //   var y = document.getElementById('teamA').value;
 //   var z = document.getElementById('teamB').value;
     if(x==""){
         //$(".tournamentHideShow").hide();
-        document.getElementById("team").innerHTML = "<div class='text-danger'>Please select a tournament to find team list</div>";
+        document.getElementById("hometeam").innerHTML = "<option value=''>-</option>";
+        document.getElementById("awayteam").innerHTML = "<option value=''>-</option>";
     }else{
-        $("#team").show();
         const xhttp = new XMLHttpRequest();
           xhttp.onload = function() {
-            document.getElementById("team").innerHTML = this.responseText;
+            document.getElementById("hometeam").innerHTML = this.responseText;
+            document.getElementById("awayteam").innerHTML = this.responseText;
           }
           xhttp.open("GET", "{{ url('/') }}/control-panel/admin/getTeam/"+document.getElementById('catValue').value);
           xhttp.send();

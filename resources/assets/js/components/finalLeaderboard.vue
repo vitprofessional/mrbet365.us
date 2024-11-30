@@ -2,7 +2,7 @@
     <div>
         <nav class="navtabs mt-0 tabbable">
             <div class="nav nav-tabs bet-icon" id="nav-tab" role="tablist">
-                <button v-bind:class="BindBtnClass('NULL')"  id="nav-all-tab" data-bs-toggle="tab" data-bs-target="#nav-all" type="button" role="tab" aria-controls="nav-all" aria-selected="true"><img src="\assets\images\trophy.png" alt="All Sports"><br>All Sports</button>
+                <button v-bind:class="BindBtnClass('NULL')"  id="nav-all-tab" data-bs-toggle="tab" data-bs-target="#nav-all" type="button" role="tab" aria-controls="nav-all" aria-selected="true"><img src="assets\images\trophy.png" alt="All Sports"><br>All Sports</button>
                 <button v-for="(val,key) in catData" v-bind:class="BindBtnClass(val.id)" :id="'nav-'+val.id+'-tab'" data-bs-toggle="tab" :data-bs-target="'#nav-'+val.id" type="button" role="tab" :aria-controls="'nav-'+val.id" aria-selected="true"> <img :src="val.catLogo" :alt="val.name"><br>{{ val.name }}</button>
             </div> 
         </nav>
@@ -48,21 +48,21 @@
                                                             <button v-else disabled type="button" class="btn btn-outline-secondary bet-option btn-sm rounded-0 btn-fluid"><div class="row"><div class="col-9 text-start">{{team.name}}</div> <div class="col-3 text-end text-rate">-</div></div></button>
                                                         </div>
                                                         <!-- Modal -->
-                                                        <div class="modal fade" :id="'fq'+fqVal.id+tindex" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal fade" :id="'fq'+fqVal.id+tindex" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                             <div class="modal-dialog modal-dialog-centered">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header bg-dark text-white fw-bold text-center">
                                                                         <h2 class="modal-title" style="font-size:1.5rem" id="exampleModalLabel">Place your bet with </h2>
-                                                                        <button type="button" id="fqReset" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        <button type="button" :id="'fqReset'+fqVal.id+tindex" :onclick="'fqReset('+fqVal.id+tindex+')'" class="btn-close" data-bs-toggle="modal" aria-label="Close" :data-bs-target="'#fq'+fqVal.id+tindex"></button>
                                                                     </div>
                                                                     <div class="modal-body bet-data">
-                                                                        <div :id="'fqProcess'+fqVal.id+tindex"></div>
-                                                                        <div :id="'fqSuccess'+fqVal.id+'-'+tindex"></div>
                                                                         <div v-if="val.sessionUser != null">
+                                                                            <div :id="'fqProcess'+fqVal.id+tindex"></div>
+                                                                            <div :id="'fqSuccess'+fqVal.id+''+tindex"></div>
                                                                             <div class="row" v-if="fqVal.status == 1" :id="'fqForm'+fqVal.id+tindex">
                                                                                 <form method="post" action="javascript:void(0)" class="form col-12 col-md-10 mx-auto">
                                                                                     <input type="hidden" name="_token" :value="val.csrf_field" />
-                                                                                    <input type="hidden" name="fieldIndex[]" :value="fqVal.id+'-'+tindex">
+                                                                                    <input type="hidden" name="fieldIndex[]" :value="fqVal.id+''+tindex">
                                                                                     <ul>
                                                                                         <li class="fw-bold text-warning">Minimum bet amount {{ val.SD.minBet }}   & Maximum {{ val.SD.maxBet }}</li>
                                                                                         <li>Q. {{ fqVal.options.optionName }}</li>
@@ -120,21 +120,21 @@
                                                             <button v-else disabled type="button" class="btn btn-outline-secondary bet-option btn-sm rounded-0 btn-fluid"><div class="row"><div class="col-9 text-start">Tie/Draw</div> <div class="col-3 text-end text-rate">-</div></div></button>
                                                         </div>
                                                         <!-- Modal -->
-                                                        <div class="modal fade" :id="'fq'+fqVal.id+3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal fade" :id="'fq'+fqVal.id+3"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                             <div class="modal-dialog modal-dialog-centered">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header bg-dark text-white fw-bold text-center">
                                                                         <h2 class="modal-title" style="font-size:1.5rem" id="exampleModalLabel">Place your bet with </h2>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        <button type="button" :onclick="'fqReset('+fqVal.id+3+')'" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
                                                                     <div class="modal-body bet-data">
                                                                         <div :id="'fqProcess'+fqVal.id+3"></div>
-                                                                        <div :id="'fqSuccess'+fqVal.id+'-'+3"></div>
+                                                                        <div :id="'fqSuccess'+fqVal.id+3"></div>
                                                                         <div v-if="val.sessionUser != null">
                                                                             <div class="row" v-if="fqVal.status == 1" :id="'fqForm'+fqVal.id+3">
                                                                                 <form method="post" action="javascript:void(0)" class="form col-12 col-md-10 mx-auto">
                                                                                     <input type="hidden" name="_token" :value="val.csrf_field" />
-                                                                                    <input type="hidden" name="fieldIndex" :value="fqVal.id+'-'+3">
+                                                                                    <input type="hidden" name="fieldIndex" :value="fqVal.id+3">
                                                                                     <ul>
                                                                                         <li class="fw-bold text-warning">Minimum bet amount {{ val.SD.minBet }}   & Maximum {{ val.SD.maxBet }}</li>
                                                                                         <li>Q. {{ fqVal.options.optionName }}</li>
@@ -192,21 +192,21 @@
                                                         <button v-else disabled type="button" class="btn btn-outline-secondary bet-option btn-sm rounded-0 btn-fluid"><div class="row"><div class="col-9 text-start">{{answer.answer}}</div> <div class="col-3 text-end text-rate">-</div></div></button>
                                                     </div>
                                                     <!-- Modal -->
-                                                    <div class="modal fade" :id="'cq'+cqVal.id+aindex" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal fade" :id="'cq'+cqVal.id+aindex"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
                                                             <div class="modal-header bg-dark text-white fw-bold text-center">
                                                                 <h2 class="modal-title" style="font-size:1.5rem" id="exampleModalLabel">Place your bet with </h2>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                <button type="button" :onclick="'cqReset('+cqVal.id+aindex+')'" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body bet-data">
                                                                 <div :id="'cqBetProcess'+cqVal.id+aindex"></div>
-                                                                <div :id="'cqSuccess'+cqVal.id+'-'+aindex"></div>
+                                                                <div :id="'cqSuccess'+cqVal.id+''+aindex"></div>
                                                                 <div v-if="val.sessionUser != null">
                                                                     <div class="row" v-if="cqVal.status == 1" :id="'cqForm'+cqVal.id+aindex">
                                                                             <form method="post" action="javascript:void(0)" class="form col-12 col-md-10 mx-auto">
                                                                                 <input type="hidden" name="_token" :value="val.csrf_field" />
-                                                                                <input type="hidden" name="fieldIndex" :value="cqVal.id+'-'+aindex">
+                                                                                <input type="hidden" name="fieldIndex[]" :value="cqVal.id+''+aindex">
                                                                             <ul>
                                                                                 <li class="fw-bold text-warning">Minimum bet amount {{ val.SD.minBet }}   & Maximum {{ val.SD.maxBet }}</li>
                                                                                 <li>Q. {{ cqVal.options.optionName }}</li>
@@ -302,21 +302,21 @@
                                                             <button v-else disabled type="button" class="btn btn-outline-secondary bet-option btn-sm rounded-0 btn-fluid"><div class="row"><div class="col-9 text-start">{{team.name}}</div> <div class="col-3 text-end text-rate">-</div></div></button>
                                                         </div>
                                                         <!-- Modal -->
-                                                        <div class="modal fade" :id="'sfq'+fqVal.id+tindex" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal fade" :id="'sfq'+fqVal.id+tindex" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                             <div class="modal-dialog modal-dialog-centered">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header bg-dark text-white fw-bold text-center">
                                                                         <h2 class="modal-title" style="font-size:1.5rem" id="exampleModalLabel">Place your bet with </h2>
-                                                                        <button type="button" id="sfqReset" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        <button type="button" :onclick="'sfqReset('+fqVal.id+tindex+')'" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
                                                                     <div class="modal-body bet-data">
                                                                         <div :id="'sfqProcess'+fqVal.id+tindex"></div>
-                                                                        <div :id="'sfqSuccess'+fqVal.id+'-'+tindex"></div>
+                                                                        <div :id="'sfqSuccess'+fqVal.id+''+tindex"></div>
                                                                         <div v-if="val.sessionUser != null">
                                                                             <div class="row" v-if="fqVal.status == 1" :id="'sfqForm'+fqVal.id+tindex">
                                                                                 <form method="post" action="javascript:void(0)" class="form col-12 col-md-10 mx-auto">
                                                                                     <input type="hidden" name="_token" :value="val.csrf_field" />
-                                                                                    <input type="hidden" name="fieldIndex" :value="fqVal.id+'-'+tindex">
+                                                                                    <input type="hidden" name="fieldIndex[]" :value="fqVal.id+''+tindex">
                                                                                     <ul>
                                                                                         <li class="fw-bold text-warning">Minimum bet amount {{ val.SD.minBet }}   & Maximum {{ val.SD.maxBet }}</li>
                                                                                         <li>Q. {{ fqVal.options.optionName }}</li>
@@ -372,21 +372,21 @@
                                                             <button v-else disabled type="button" class="btn btn-outline-secondary bet-option btn-sm rounded-0 btn-fluid"><div class="row"><div class="col-9 text-start">Tie/Draw</div> <div class="col-3 text-end text-rate">-</div></div></button>
                                                         </div>
                                                         <!-- Modal -->
-                                                        <div class="modal fade" :id="'sfq'+fqVal.id+3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal fade" :id="'sfq'+fqVal.id+3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                             <div class="modal-dialog modal-dialog-centered">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header bg-dark text-white fw-bold text-center">
                                                                         <h2 class="modal-title" style="font-size:1.5rem" id="exampleModalLabel">Place your bet with </h2>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        <button type="button" :onclick="'sfqReset('+fqVal.id+tindex+')'" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
                                                                     <div class="modal-body bet-data">
                                                                         <div :id="'sfqProcess'+fqVal.id+3"></div>
-                                                                        <div :id="'sfqSuccess'+fqVal.id+'-'+3"></div>
+                                                                        <div :id="'sfqSuccess'+fqVal.id+3"></div>
                                                                         <div v-if="val.sessionUser != null">
                                                                             <div class="row" v-if="fqVal.status == 1" :id="'sfqForm'+fqVal.id+3">
                                                                                 <form method="post" action="javascript:void(0)" class="form col-12 col-md-10 mx-auto">
                                                                                     <input type="hidden" name="_token" :value="val.csrf_field" />
-                                                                                    <input type="hidden" name="fieldIndex" :value="fqVal.id+'-'+3">
+                                                                                    <input type="hidden" name="fieldIndex" :value="fqVal.id+3">
                                                                                     <ul>
                                                                                         <li class="fw-bold text-warning">Minimum bet amount {{ val.SD.minBet }}   & Maximum {{ val.SD.maxBet }}</li>
                                                                                         <li>Q. {{ fqVal.options.optionName }}</li>
@@ -444,21 +444,21 @@
                                                         <button v-else disabled type="button" class="btn btn-outline-secondary bet-option btn-sm rounded-0 btn-fluid"><div class="row"><div class="col-9 text-start">{{answer.answer}}</div> <div class="col-3 text-end text-rate">-</div></div></button>
                                                     </div>
                                                     <!-- Modal -->
-                                                    <div class="modal fade" :id="'scq'+cqVal.id+aindex" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal fade" :id="'scq'+cqVal.id+aindex" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
                                                             <div class="modal-header bg-dark text-white fw-bold text-center">
                                                                 <h2 class="modal-title" style="font-size:1.5rem" id="exampleModalLabel">Place your bet with </h2>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                <button type="button" :onclick="'scqReset('+cqVal.id+aindex+')'" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body bet-data">
                                                                 <div :id="'scqBetProcess'+cqVal.id+aindex"></div>
-                                                                <div :id="'scqSuccess'+cqVal.id+'-'+aindex"></div>
+                                                                <div :id="'scqSuccess'+cqVal.id+''+aindex"></div>
                                                                 <div v-if="val.sessionUser != null">
                                                                     <div class="row" v-if="cqVal.status == 1" :id="'scqForm'+cqVal.id+aindex">
                                                                             <form method="post" action="javascript:void(0)" class="form col-12 col-md-10 mx-auto">
                                                                                 <input type="hidden" name="_token" :value="val.csrf_field" />
-                                                                                <input type="hidden" name="fieldIndex" :value="cqVal.id+'-'+aindex">
+                                                                                <input type="hidden" name="fieldIndex[]" :value="cqVal.id+''+aindex">
                                                                             <ul>
                                                                                 <li class="fw-bold text-warning">Minimum bet amount {{ val.SD.minBet }}   & Maximum {{ val.SD.maxBet }}</li>
                                                                                 <li>Q. {{ cqVal.options.optionName }}</li>

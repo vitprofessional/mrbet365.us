@@ -8,24 +8,23 @@
     $siteConfig = \App\Models\SiteConfig::first();
 @endphp
 
-        @if(Session::get('success'))
-            <div class="alert alert-success border-0">
-            <span>{!! Session::get('success') !!}</span>
-            </div>
-        @endif
-        @if(Session::get('error'))
-            <div class="alert alert-danger border-0">
-            <span>{!! Session::get('error') !!}</span>
-            </div>
-        @endif
-   
+    @if(Session::get('success'))
+        <div class="alert alert-success border-0">
+        <span>{!! Session::get('success') !!}</span>
+        </div>
+    @endif
+    @if(Session::get('error'))
+        <div class="alert alert-danger border-0">
+        <span>{!! Session::get('error') !!}</span>
+        </div>
+    @endif
     <div class="row align-items-center">
         <div id="carouselExampleCaptions" class="carousel slide col-12" data-bs-ride="carousel">
             <div class="carousel-indicators">
                 @php
                     $slider = \App\Models\Slider::orderBy('id','DESC')->get();
                 @endphp
-                @if(count($slider)>0)
+                @if(!empty($slider) && count((array)$slider)>0)
                 @php
                     $a = 0;
                 @endphp
@@ -41,13 +40,13 @@
                 @endif
             </div>
             <div class="carousel-inner mobile-slider">
-                @if(count($slider)>0)
+                @if(!empty($slider) && count((array)$slider)>0)
                 @php
                     $x = 1;
                 @endphp
                 @foreach($slider as $slid)
                 <div class="carousel-item @if($x==1) active @endif">
-                    <img src="{{ $slid->slider }}" class="d-block w-100" style="max-height:450px" alt="{{ $slid->heading }}" />
+                    <img src="{{ url('/').'/'.$slid->slider }}" class="d-block w-100" style="max-height:450px" alt="{{ $slid->heading }}" />
                     <div class="carousel-caption row align-items-center slider-bg">
                         <div class="col-12 col-md-4 d-none d-md-block mx-auto">
                             @if(!empty($slid->heading))
@@ -119,7 +118,7 @@
                         $today = date('Y-m-d');
                         $upcoming = \App\Models\Matche::where(['status'=>2])->whereDate('matchTime', '>=', $today)->get();
                     @endphp
-                    @if(count($upcoming)>0)
+                    @if(!empty($upcoming) && count((array)$upcoming)>0)
                         @foreach($upcoming as $upc)
                         @php
                             $category = \App\Models\Category::find($upc->category);
@@ -146,148 +145,12 @@
                 </div>
             </div>
         </div>
-    </div>
-    <script src="{{ asset('js/app.js') }}"></script>
+    </div><script src="{{ asset('js/app.js') }}"></script>
 @php
     $details    = \App\Models\BetUser::find(Session::get('betuser'));
     $clubDetails    = \App\Models\BettingClub::find(Session::get('BettingClub'));
 @endphp
-    @if(count($details)>0))
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script>
-        
-        
-    //Single Bet Data Bet Placed
-    function estAmtCount(e){
-        var amount = document.getElementById("betAmount"+e).value;
-        var rate = document.getElementById("answerRate"+e).value;
-        var returnAmount = amount*rate;
-        document.getElementById("estReturn"+e).innerHTML = returnAmount;
-    }
-    function sestAmtCount(e){
-        var amount = document.getElementById("sbetAmount"+e).value;
-        var rate = document.getElementById("sanswerRate"+e).value;
-        var returnAmount = amount*rate;
-        document.getElementById("sestReturn"+e).innerHTML = returnAmount;
-    }
-    //Fixed Question Query
-    function fqSubmit(e){
-        console.log("#fqForm "+e+" submitted")
-        var formValues= $("#fqForm"+e+">form").serialize();
-            // $("#fqSuccess"+e).html("<div class='alert alert-success'>Bet are processing. Please wait.....</div>");
-            document.getElementById("fqBetProcess"+e).innerHTML = "<div class='alert alert-success'>Bet processing. Please wait.....</div>";
-            $("#betBtn"+e).prop("disabled", true);
-
-        $.post("{{ route('fqBetPlace') }}", formValues, function(data){
-            // Display the returned data in browser
-            //console.log(data.fieldIndex)
-            $("#fqSuccess"+data.fieldIndex).html(data.message);
-            document.getElementById("fqBetProcess"+e).innerHTML = "";
-            document.getElementById("estReturn"+e).innerHTML = "0.00";
-            $("#betBtn"+e).prop("disabled", false);
-            $("form").trigger("reset");
-            //$('#fqForm').replaceWith(data.message);
-            if(data.currBalance>=0){
-                $("#userBalanceMT").html(parseFloat(data.currBalance).toFixed(2));
-                $("#userBalanceDT").html(parseFloat(data.currBalance).toFixed(2));
-                $("#userBalance").html(parseFloat(data.currBalance).toFixed(2));                
-            }
-            window.setTimeout(function() {
-                $("#message-alert").fadeTo(2000, 500).slideUp(500, function(){
-                    $(this).remove(); 
-                });
-            }, 5000);
-        });
-    }
-    
-    function cqSubmit(e){
-        console.log("#cqForm "+e+" submitted")
-        var formValues= $("#cqForm"+e+">form").serialize();
-        document.getElementById("cqBetProcess"+e).innerHTML = "<div class='alert alert-success'>Bet processing. Please wait.....</div>";
-        $("#betBtn"+e).prop("disabled", true);
-    
-        $.post("{{ route('cqBetPlace') }}", formValues, function(data){
-            // Display the returned data in browser
-            //console.log(data.message)
-            $("#cqSuccess"+data.fieldIndex).html(data.message);
-            document.getElementById("cqBetProcess"+e).innerHTML = "";
-            document.getElementById("estReturn"+e).innerHTML = "0.00";
-            $("#betBtn"+e).prop("disabled", false);
-            $("form").trigger("reset");
-            //$('#fqForm').replaceWith(data.message);
-            if(data.currBalance>=0){
-                $("#userBalanceMT").html(parseFloat(data.currBalance).toFixed(2));
-                $("#userBalanceDT").html(parseFloat(data.currBalance).toFixed(2));
-                $("#userBalance").html(parseFloat(data.currBalance).toFixed(2));
-                
-            }
-            window.setTimeout(function() {
-                $("#message-alert").fadeTo(2000, 500).slideUp(500, function(){
-                    $(this).remove(); 
-                });
-            }, 5000);
-        });
-
-    }
-
-    function sfqSubmit(e){
-        console.log("#sfqForm "+e+" submitted")
-        var formValues= $("#sfqForm"+e+">form").serialize();
-        document.getElementById("sfqBetProcess"+e).innerHTML = "<div class='alert alert-success'>Bet processing. Please wait.....</div>";
-        $("#sbetBtn"+e).prop("disabled", true);
-
-        $.post("{{ route('fqBetPlace') }}", formValues, function(data){
-            // Display the returned data in browser
-            //console.log(data.fieldIndex)
-            $("#sfqSuccess"+data.fieldIndex).html(data.message);
-            document.getElementById("sfqBetProcess"+e).innerHTML = "";
-            document.getElementById("sestReturn"+e).innerHTML = "0.00";
-            $("#sbetBtn"+e).prop("disabled", false);
-            $("form").trigger("reset");
-            //$('#fqForm').replaceWith(data.message);
-            if(data.currBalance>=0){
-                $("#userBalanceMT").html(parseFloat(data.currBalance).toFixed(2));
-                $("#userBalanceDT").html(parseFloat(data.currBalance).toFixed(2));
-                $("#userBalance").html(parseFloat(data.currBalance).toFixed(2));                
-            }
-            window.setTimeout(function() {
-                $("#message-alert").fadeTo(2000, 500).slideUp(500, function(){
-                    $(this).remove(); 
-                });
-            }, 5000);
-        });
-    }
-    
-    function scqSubmit(e){
-        console.log("#scqForm "+e+" submitted")
-        var formValues= $("#scqForm"+e+">form").serialize();
-        document.getElementById("scqBetProcess"+e).innerHTML = "<div class='alert alert-success'>Bet processing. Please wait.....</div>";
-        $("#sbetBtn"+e).prop("disabled", true);
-    
-        $.post("{{ route('cqBetPlace') }}", formValues, function(data){
-            // Display the returned data in browser
-            //console.log(data.message)
-            $("#scqSuccess"+data.fieldIndex).html(data.message);
-            document.getElementById("scqBetProcess"+e).innerHTML = "";
-            document.getElementById("sestReturn"+e).innerHTML = "0.00";
-            $("#sbetBtn"+e).prop("disabled", false);
-            $("form").trigger("reset");
-            //$('#fqForm').replaceWith(data.message);
-            if(data.currBalance>=0){
-                $("#userBalanceMT").html(parseFloat(data.currBalance).toFixed(2));
-                $("#userBalanceDT").html(parseFloat(data.currBalance).toFixed(2));
-                $("#userBalance").html(parseFloat(data.currBalance).toFixed(2));
-                
-            }
-            window.setTimeout(function() {
-                $("#message-alert").fadeTo(2000, 500).slideUp(500, function(){
-                    $(this).remove(); 
-                });
-            }, 5000);
-        });
-
-    }
-    
-    </script>
+    @if(!empty($details) && count((array)$details)>0))
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script><script src="{{ asset('/assets/js/submitJS.js') }}"></script>
     @endif
 @endsection

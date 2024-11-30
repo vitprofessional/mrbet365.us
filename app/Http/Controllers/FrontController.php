@@ -14,7 +14,7 @@ class FrontController extends Controller
 {
     public function frontHome(){
         $sd    = SiteConfig::all();
-        if(count($sd)>0):
+        if(count((array)$sd)>0):
             foreach($sd as $ds):
                 $sdid   = $ds->id;
             endforeach;
@@ -25,7 +25,7 @@ class FrontController extends Controller
     }
     public function advanceBet(){
         $sd    = SiteConfig::all();
-        if(count($sd)>0):
+        if(count((array)$sd)>0):
             foreach($sd as $ds):
                 $sdid   = $ds->id;
             endforeach;
@@ -42,7 +42,7 @@ class FrontController extends Controller
     public function confirmLogin(Request $requ){
         $userid = strtolower($requ->userId);
         $betuser = BetUser::where(['email'=>$userid])->orWhere(['userid'=>$userid])->first();
-        if(count($betuser)>0):
+        if(count((array)$betuser)>0):
             if($betuser->status==5):
                 $hashpass  = $betuser->hashpassword;
                 $sessionid  = $betuser->id;
@@ -78,7 +78,7 @@ class FrontController extends Controller
             $userid     = strtolower($requ->userId);
             $usermail   = strtolower($requ->email);
             $betuser =   BetUser::where(['email'=>$usermail])->orWhere(['userid'=>$userid])->get();
-            if(count($betuser)>0):
+            if(count((array)$betuser)>0):
                 return redirect(route('userRegister'))->with('error','Sorry! UserID or Email already exist on our system');
             else:
                 $hashpass   = Hash::make($requ->password);
@@ -114,7 +114,7 @@ class FrontController extends Controller
     
     public function confirmClubLogin(Request $requ){
         $club = BettingClub::where(['email'=>$requ->clubId])->orWhere(['clubId'=>$requ->clubId])->first();
-        if(count($club)>0):
+        if(count((array)$club)>0):
             if($club->status==5):
                 $hashpass   = $club->hashpassword;
                 $sessionid  = $club->id;
@@ -147,7 +147,7 @@ class FrontController extends Controller
     
     public function confirmAdminLogin(Request $requ){
         $admin = AdminUser::where(['email'=>$requ->adminId])->orWhere(['adminid'=>$requ->adminId])->first();
-        if(count($admin)>0):
+        if(count((array)$admin)>0):
             if($admin->status=="Active"):
                 $hashpass   = $admin->hashpass;
                 $sessionid  = $admin->id;
@@ -179,7 +179,7 @@ class FrontController extends Controller
             return back()->with('error','Sorry! Confirm password does not match');
         else:
             $admin =   AdminUser::where(['email'=>$requ->email])->orWhere(['adminid'=>$requ->userId])->get();
-            if(count($admin)>0):
+            if(count((array)$admin)>0):
                 return back()->with('error','Sorry! AdminID or Email already exist on our system');
             else:
                 $hashpass   = Hash::make($requ->loginPass);

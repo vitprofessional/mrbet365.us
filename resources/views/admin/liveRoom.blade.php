@@ -297,7 +297,7 @@
 <!-- Question Model -->
 <!-- Modal -->
 <div class="modal fade" id="matchQuestionModel" tabindex="-1" aria-labelledby="matchBetQuestion" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg  modal-dialog-scrollable">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-full-height">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="matchBetQuestion">Add Bet Question</h5>
@@ -315,7 +315,7 @@
                             <input type="hidden" name="tournament" value="{{ $match->tournament }}">
                             <div class="form-group pb-2">
                                 <label for="catId">Category</label>
-                                <select name="catId" id="catValue" class="form-control border-dark" required>
+                                <select name="catId" id="catValue" class="select2 form-control border-dark category" required>
                                     <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                                     <option value="">-</option>
                                 </select>
@@ -323,7 +323,7 @@
                             <div id="optionType" class="optionType">
                                 <div class='form-group pb-2'>
                                     <label for='optType'>Option Type</label>
-                                    <select name="optType" class="form-control border-dark" id="optVal" required>
+                                    <select name="optType" class="select2 border-dark" id="optVal" required>
                                         <option value="">-</option>
                                         <option value="1">Two Option</option>
                                         <option value="2">Three Option</option>
@@ -331,7 +331,14 @@
                                     </select>
                                 </div>
                             </div>
-                            <div id="bOption"></div>
+                            <div id="bOption">
+                                <div class='form-group pb-2'>
+                                    <label for='optId'>Option List</label>
+                                    <select name='optId' id='optId' onchange="answerChange()" class='form-control border border-dark custom-select' required> 
+                                        <option value="">-</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div id="oAnswer"></div>
                             <div id="twoOption"></div>
                             <div id="threeOption"></div>
@@ -366,7 +373,7 @@ $('#addQuestion').on('click', function (e) {
         $("#twoOption").html('');
         $("#threeOption").html('');
         $("#oAnswer").html("");
-        $("#bOption").html("");
+        $("#bOption").hide();
 });
 $('#catValue').on('change', function (e) {
   var y = this.value;
@@ -375,7 +382,7 @@ $('#catValue').on('change', function (e) {
         $("#twoOption").html('');
         $("#threeOption").html('');
         $("#oAnswer").html("");
-        $("#bOption").html("");
+        $("#bOption").hide();
     }else{
         $("#optionType").show();
     }
@@ -388,7 +395,7 @@ $('#optVal').on('change', function (e) {
         $("#twoOption").html('');
         $("#threeOption").html('');
         $("#oAnswer").html("");
-        $("#bOption").html("<div class='text-danger'>Please select question type to get data</div>");
+        $("#bOption").hide();
     }else if(z==1){
         $("#twoOption").html('<div class="row my-2"><div class="col-6 mx-auto"> <label>{{ $teamA->team }}</label><input type="text" class="form-control border-dark" value="1.90" name="teamA"></div><div class="col-6 mx-auto"> <label>{{ $teamB->team }}</label><input type="text" class="form-control border-dark" value="1.90" name="teamB"></div></div>');
         $("#threeOption").html('');
@@ -397,7 +404,8 @@ $('#optVal').on('change', function (e) {
         
         const xhttp = new XMLHttpRequest();
           xhttp.onload = function() {
-            document.getElementById('bOption').innerHTML = this.responseText;
+            $("#bOption").show();
+            document.getElementById('optId').innerHTML = this.responseText;
           }
           xhttp.open("GET", "{{ url('/') }}/control-panel/admin/getFixedOption/"+document.getElementById('catValue').value+"/"+document.getElementById('optVal').value);
           xhttp.send();
@@ -405,7 +413,7 @@ $('#optVal').on('change', function (e) {
         $("#oAnswer").html("");
         const xhttp = new XMLHttpRequest();
           xhttp.onload = function() {
-            document.getElementById('bOption').innerHTML = this.responseText;
+            document.getElementById('optId').innerHTML = this.responseText;
           }
           xhttp.open("GET", "{{ url('/') }}/control-panel/admin/getFixedOption/"+document.getElementById('catValue').value+"/"+document.getElementById('optVal').value);
           xhttp.send();
@@ -414,10 +422,11 @@ $('#optVal').on('change', function (e) {
     }else if(z==3){
         $("#twoOption").html("");
         $("#threeOption").html("");
+        $("#bOption").show();
         
         const xhttp = new XMLHttpRequest();
           xhttp.onload = function() {
-            document.getElementById('bOption').innerHTML = this.responseText;
+            document.getElementById('optId').innerHTML = this.responseText;
           }
           xhttp.open("GET", "{{ url('/') }}/control-panel/admin/getFixedOption/"+document.getElementById('catValue').value+"/"+document.getElementById('optVal').value);
           xhttp.send();
@@ -428,7 +437,7 @@ function answerChange() {
   var x = document.getElementById('optId').value;
     if(x==""){
         //$(".tournamentHideShow").hide();
-        document.getElementById("oAnswer").innerHTML = "<div class='text-danger'>Please select an option to find answer list</div>";w
+        document.getElementById("oAnswer").innerHTML = "<option value=''>-</option>";
     }else{
         //$("bAnswer").show();
         const xhttp = new XMLHttpRequest();
@@ -451,7 +460,6 @@ function addField(Aid,Qid){
     
 }
 $(document).ready(function(){
-
     var maxField = 15; //Input fields increment limitation
     var wrapper = $('#oAnswer'); //Input field wrapper
     //var wrapper2 = $('#field_wrapper'); //Input field wrapper

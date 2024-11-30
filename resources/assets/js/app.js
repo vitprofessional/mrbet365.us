@@ -1,4 +1,14 @@
-
+document.onkeydown = function(e){
+    if(e.KeyboardEvent == 123){
+        return false;
+    }else if (e.ctrlKey && e.shiftKey && e.KeyboardEvent == 'I'.charCodeAt(0)) { 
+        return false;
+    }else if (e.ctrlKey && e.shiftKey && e.KeyboardEvent == 'J'.charCodeAt(0)){
+        return false;
+    }else if (e.ctrlKey && e.KeyboardEvent && 'U'.charCodeAt(0)){
+        return false;
+    }
+}
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when

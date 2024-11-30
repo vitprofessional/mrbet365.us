@@ -79,6 +79,47 @@ class AdminPanelController extends Controller
             return back()->with('error','Sorry! Server update failed');
         endif;
     }
+    //admin profile update controller
+    public function updateAdmin(Request $requ){
+        $profile    = AdminUser::find($requ->adminId);
+        if(count($profile)>0):
+            $profile->phone     = $requ->phone;
+            if($profile->save()):
+                return back()->with('success','Success! Profile updated successfully');
+            else:
+                return back()->with('error','Sorry! Profile filed to save');
+            endif;
+        else:
+            return back()->with('error','Sorry! No profile to update');
+        endif;
+    }
+    
+    public function updateAdminPass(Request $requ){
+        if($requ->newPass!=$requ->confirmPass):
+            return back()->with('error','Sorry! New password does not match with confirm password');
+        else:
+            $profile    = AdminUser::find($requ->adminId);
+            if(count($profile)>0):
+                $hashpass   = $profile->hashpass;
+            	$authuser = Hash::check($requ->oldPass,$hashpass);
+            	
+                if($authuser):
+                    $hashpass   = Hash::make($requ->newPass);
+                    $profile->plainpass = $requ->newPass;
+                    $profile->hashpass  = $hashpass;
+                    if($profile->save()):
+                        return back()->with('success','Success! Password changed successfully');
+                    else:
+                        return back()->with('error','Sorry! Password filed to changed');
+                    endif;
+                else:
+                    return back()->with('error','Sorry! Old password does not match');
+                endif;
+            else:
+                return back()->with('error','Sorry! No profile to update');
+            endif;
+        endif;
+    }
 
     //User controller
     public function updateUser(Request $requ){
