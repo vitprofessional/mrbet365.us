@@ -391,7 +391,7 @@
                             <i class="fab fa-twitter-square fw-bold font-15 text-white"></i>
                             <i class="fab fa-instagram-square fw-bold font-15 text-white"></i>
                         </div>
-                        <img src="\assets\images\protected.jpg" class="w-50 bg-white rounded" alt="MrBet365">
+                        <img src="{{ url('/') }}\assets\images\protected.jpg" class="w-50 bg-white rounded" alt="MrBet365">
                     </div>
                     <div class="col-12 col-md-4 mx-auto quick-link mt-4 mt-md-0">
                         <h2 class="mb-2">Quick Link</h2>
@@ -414,7 +414,7 @@
                             <a href="mailto:first.last@example.com" class="text-white">support@example.com</a>
                           </address>
                         </div>
-                        <img src="\assets\images\paymentmethod.png" class="w-50 bg-white rounded mt-4" alt="MrBet365">
+                        <img src="{{ url('/') }}\assets\images\paymentmethod.png" class="w-50 bg-white rounded mt-4" alt="MrBet365">
                     </div>
                     <div class="col-10 col-md-6 mx-auto text-center mt-4 text-white fw-bold">
                         <p class="m-0">Copyright &copy; MrBet365 {{ date('Y') }} | All Rights reserved</p>
