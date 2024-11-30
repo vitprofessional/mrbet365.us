@@ -49,7 +49,7 @@
                             $today = date('Y-m-d');
                             $matchList = \App\Models\Matche::where(['category'=>$catData->id])->where(['status'=>2])->whereDate('matchTime', '>=', $today)->orderBy('matchTime','DESC')->get()
                         @endphp
-                        @if(count($matchList)>0)
+                        @if(count((array)$matchList)>0)
                             @foreach($matchList as $ml)
                             <div class="bg-category mb-4">
                                 @php
@@ -87,7 +87,7 @@
                             $today = date('Y-m-d');
                             $matchLists = \App\Models\Matche::where(['category'=>$catTabs->id])->where(['status'=>2])->whereDate('matchTime', '>=', $today)->orderBy('matchTime','DESC')->get()
                         @endphp
-                        @if(count($matchLists)>0)
+                        @if(count((array)$matchLists)>0)
                             @foreach($matchLists as $sml)
                             <div class="bg-category mb-4">
                                 @php
@@ -125,7 +125,7 @@
     $details    = \App\Models\BetUser::find(Session::get('betuser'));
     $clubDetails    = \App\Models\BettingClub::find(Session::get('BettingClub'));
 @endphp
-    @if(count($details)>0))
+    @if(count((array)$details)>0))
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <!--<script src="{{ asset('/') }}adm-assets/js/customFunction.js"></script>-->
     <script>
